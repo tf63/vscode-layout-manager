@@ -59,7 +59,7 @@
             },
             "suspicious": {
                 "recommended": true,
-                "noConsoleLog": "warn",
+                "noConsoleLog": "off",
                 "noDebugger": "error",
                 "useAwait": "error"
             },
