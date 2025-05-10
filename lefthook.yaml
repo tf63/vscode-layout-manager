@@ -1,0 +1,36 @@
+pre-commit:
+    piped: true
+    commands:
+        prettier:
+            priority: 1
+            glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,md,mdx,yml,yaml,css,html}'
+            run: |
+                devbox run prettier {staged_files} --write
+            stage_fixed: true
+            skip:
+                - merge
+                - rebase
+
+        biome:
+            priority: 2
+            glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}'
+            run: |
+                devbox run biome check {staged_files} --write
+            stage_fixed: true
+            skip:
+                - merge
+                - rebase
+
+post-merge:
+    commands:
+        devbox:
+            run: devbox install
+        pnpm:
+            glob: '{package.json,pnpm-lock.yaml}'
+            run: pnpm install
+
+commit-msg:
+    commands:
+        commitlint:
+            run: |
+                devbox run commitlint --edit {1}

@@ -1,0 +1,19 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
+    "packages": [
+        "gh@2.69.0",
+        "pnpm@10.8.0",
+        "nodejs@22.14.0",
+        "uv@0.6.14",
+        "lefthook@1.11.5",
+        "biome@1.9.4",
+        "nodePackages.prettier@3.5.3",
+        "commitlint@19.8.0"
+    ],
+    "shell": {
+        "init_hook": ["lefthook install"],
+        "scripts": {
+            "test": ["echo \"Error: no test specified\" && exit 1"]
+        }
+    }
+}

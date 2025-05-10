@@ -1,0 +1,23 @@
+{
+    // Common
+    "files.insertFinalNewline": true,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.prettierPath": ".devbox/nix/profile/default/lib/node_modules/prettier",
+    // Python
+    "editor.codeActionsOnSave": {
+        "source.organizeImports.ruff": "explicit"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+    "notebook.formatOnSave.enabled": true,
+    "notebook.codeActionsOnSave": {
+        "source.addMissingImports": "explicit",
+        "source.organizeImports.ruff": "explicit"
+    }
+}
