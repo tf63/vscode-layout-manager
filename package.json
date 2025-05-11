@@ -1,5 +1,5 @@
 {
-    "name": "tf63-sample-extension",
+    "name": "layout-manager",
     "displayName": "sample",
     "description": "",
     "version": "0.0.1",
@@ -14,8 +14,12 @@
     "contributes": {
         "commands": [
             {
-                "command": "tf63-sample-extension.helloWorld",
-                "title": "Hello World"
+                "command": "layoutManager.saveSession",
+                "title": "Layout Manager: Save Session"
+            },
+            {
+                "command": "layoutManager.restoreSession",
+                "title": "Layout Manager: Restore Session"
             }
         ]
     },

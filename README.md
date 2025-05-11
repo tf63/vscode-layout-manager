@@ -1,6 +1,6 @@
-# tf63-sample-extension README
+# layout-manager README
 
-This is the README for your extension "tf63-sample-extension". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "layout-manager". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
