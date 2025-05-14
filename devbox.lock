@@ -373,54 +373,6 @@
           "store_path": "/nix/store/kclz9i3vq2fz8nnn947l773a95fj77z3-pnpm-10.8.0"
         }
       }
-    },
-    "uv@0.6.14": {
-      "last_modified": "2025-04-17T05:47:26Z",
-      "resolved": "github:NixOS/nixpkgs/ebe4301cbd8f81c4f8d3244b3632338bbeb6d49c#uv",
-      "source": "devbox-search",
-      "version": "0.6.14",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/j6axb9j689zp57db84dxx49xbc24invk-uv-0.6.14",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/j6axb9j689zp57db84dxx49xbc24invk-uv-0.6.14"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/f5s581ak0mysvq70ph3yx7kakp7ha1i1-uv-0.6.14",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/f5s581ak0mysvq70ph3yx7kakp7ha1i1-uv-0.6.14"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/0w57k0fm42ag2wx3pam039dp74m2bil7-uv-0.6.14",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/0w57k0fm42ag2wx3pam039dp74m2bil7-uv-0.6.14"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/xqlxrgqkz1vyfi65v04212w8g341lpk4-uv-0.6.14",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/xqlxrgqkz1vyfi65v04212w8g341lpk4-uv-0.6.14"
-        }
-      }
     }
   }
 }

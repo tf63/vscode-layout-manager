@@ -11,5 +11,12 @@
     "prettier.prettierPath": ".devbox/nix/profile/default/lib/node_modules/prettier",
     "eslint.enable": false,
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-    "typescript.tsc.autoDetect": "off"
+    "typescript.tsc.autoDetect": "off",
+    "terminal.integrated.profiles.osx": {
+        "WithDevbox": {
+            "path": "fish",
+            "args": ["-c", "devbox shell && fish"]
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "WithDevbox"
 }
