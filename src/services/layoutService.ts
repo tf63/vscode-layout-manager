@@ -9,8 +9,12 @@ export class LayoutService {
         this.repository = repository
     }
 
-    async create(name: string) {
-        await this.repository.save(new Layout({ key: name, tabGroups: [] }))
+    async create(name: string, tabGroups: LayoutProps['tabGroups']) {
+        const layout = new Layout({
+            key: name,
+            tabGroups,
+        })
+        await this.repository.save(layout)
     }
 
     async getAll() {
