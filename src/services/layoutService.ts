@@ -1,8 +1,6 @@
-// Layout service for CRUD operations
-
-import type { LayoutProps } from '../types/layout'
 import { Layout } from '../models/layout'
 import type { LayoutRepository } from '../repositories/layoutRepository'
+import type { LayoutProps } from '../types/layout'
 
 export class LayoutService {
     private repository: LayoutRepository
@@ -11,16 +9,16 @@ export class LayoutService {
         this.repository = repository
     }
 
-    async create(layout: LayoutProps) {
-        await this.repository.save(new Layout(layout))
+    async create(name: string) {
+        await this.repository.save(new Layout({ key: name, tabGroups: [] }))
     }
 
-    async load(key: string) {
-        return await this.repository.get(key)
-    }
-
-    async list() {
+    async getAll() {
         return await this.repository.getAll()
+    }
+
+    async get(key: string) {
+        return await this.repository.get(key)
     }
 
     async overwrite(layout: LayoutProps) {

@@ -1,6 +1,6 @@
 // Layouts view provider (stub)
 
-import { type TreeDataProvider, TreeItem, type Event, EventEmitter } from 'vscode'
+import { type Event, EventEmitter, type TreeDataProvider, TreeItem } from 'vscode'
 import type { LayoutService } from '../services/layoutService'
 
 export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
@@ -15,7 +15,7 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
 
     async getChildren(element?: TreeItem) {
         if (!element) {
-            const layouts = await this.layoutService.list()
+            const layouts = await this.layoutService.getAll()
             return layouts.map((layout) => new TreeItem(layout.key))
         }
         return []

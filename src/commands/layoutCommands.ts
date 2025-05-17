@@ -1,27 +1,18 @@
 // Layout commands registration
 
-import { type ExtensionContext, commands, window, InputBoxOptions, QuickPickItem } from 'vscode'
-import { LayoutService } from '../services/layoutService'
-import { WorkspaceLayoutRepository } from '../repositories/layoutRepository'
-import { Layout } from '../models/layout'
+import { type ExtensionContext, commands, window } from 'vscode'
+import type { LayoutService } from '../services/layoutService'
 
-export function registerLayoutCommands(context: ExtensionContext) {
-    const repository = new WorkspaceLayoutRepository(context.workspaceState)
-    const service = new LayoutService(repository)
-
+export function registerLayoutCommands(context: ExtensionContext, service: LayoutService) {
     context.subscriptions.push(
         commands.registerCommand('layoutManager.createLayout', async () => {
             const name = await window.showInputBox({ prompt: '新しいレイアウト名を入力してください' })
             if (!name) return
-            const layout = new Layout({
-                key: name,
-                tabGroups: [],
-            })
-            await service.create(layout)
+            await service.create(name)
             window.showInformationMessage(`レイアウト「${name}」を作成しました`)
         }),
         commands.registerCommand('layoutManager.loadLayout', async () => {
-            const layouts = await service.list()
+            const layouts = await service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -34,18 +25,18 @@ export function registerLayoutCommands(context: ExtensionContext) {
             window.showInformationMessage(`レイアウト「${pick}」を読み込みました`)
         }),
         commands.registerCommand('layoutManager.listLayouts', async () => {
-            const layouts = await service.list()
+            const layouts = await service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
             }
-            window.showQuickPick(
+            await window.showQuickPick(
                 layouts.map((l) => l.key),
                 { placeHolder: 'レイアウト一覧' },
             )
         }),
         commands.registerCommand('layoutManager.overwriteLayout', async () => {
-            const layouts = await service.list()
+            const layouts = await service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -55,14 +46,14 @@ export function registerLayoutCommands(context: ExtensionContext) {
                 { placeHolder: '上書きするレイアウトを選択' },
             )
             if (!pick) return
-            const layout = await service.load(pick)
+            const layout = await service.get(pick)
             if (!layout) return
             layout.tabGroups = []
             await service.overwrite(layout)
             window.showInformationMessage(`レイアウト「${pick}」を上書きしました`)
         }),
         commands.registerCommand('layoutManager.renameLayout', async () => {
-            const layouts = await service.list()
+            const layouts = await service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -78,7 +69,7 @@ export function registerLayoutCommands(context: ExtensionContext) {
             window.showInformationMessage(`レイアウト「${pick}」を「${newName}」に変更しました`)
         }),
         commands.registerCommand('layoutManager.deleteLayout', async () => {
-            const layouts = await service.list()
+            const layouts = await service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
