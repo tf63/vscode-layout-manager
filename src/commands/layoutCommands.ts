@@ -2,13 +2,21 @@
 
 import { type ExtensionContext, commands, window } from 'vscode'
 import type { LayoutService } from '../services/layoutService'
+import { loadLayout } from '../usecases/loadLayoutUsecase'
+import { readTabGroups } from '../usecases/readTabGroupsUsecase'
 
+// TODO: 整理しておく
 export function registerLayoutCommands(context: ExtensionContext, service: LayoutService) {
     context.subscriptions.push(
         commands.registerCommand('layoutManager.createLayout', async () => {
             const name = await window.showInputBox({ prompt: '新しいレイアウト名を入力してください' })
             if (!name) return
-            await service.create(name)
+            const tabGroups = await readTabGroups()
+            if (!tabGroups) {
+                window.showWarningMessage('レイアウトの取得に失敗しました')
+                return
+            }
+            await service.create(name, tabGroups)
             window.showInformationMessage(`レイアウト「${name}」を作成しました`)
         }),
         commands.registerCommand('layoutManager.loadLayout', async () => {
@@ -17,12 +25,22 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
                 window.showWarningMessage('レイアウトがありません')
                 return
             }
+
             const pick = await window.showQuickPick(
                 layouts.map((l) => l.key),
                 { placeHolder: '読み込むレイアウトを選択' },
             )
             if (!pick) return
-            window.showInformationMessage(`レイアウト「${pick}」を読み込みました`)
+
+            const layout = await service.get(pick)
+            if (!layout) return
+
+            try {
+                await loadLayout(layout)
+                window.showInformationMessage(`レイアウト「${pick}」を読み込みました`)
+            } catch (_err) {
+                window.showErrorMessage('レイアウトの読み込みに失敗しました')
+            }
         }),
         commands.registerCommand('layoutManager.listLayouts', async () => {
             const layouts = await service.getAll()
