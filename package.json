@@ -2,27 +2,14 @@
     "name": "layout-manager",
     "displayName": "sample",
     "description": "",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.100.0"
     },
     "categories": [
         "Other"
     ],
-    "activationEvents": [],
     "main": "./dist/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "layoutManager.saveSession",
-                "title": "Layout Manager: Save Session"
-            },
-            {
-                "command": "layoutManager.restoreSession",
-                "title": "Layout Manager: Restore Session"
-            }
-        ]
-    },
     "scripts": {
         "vscode:prepublish": "pnpm run package",
         "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
@@ -34,10 +21,48 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
         "check-types": "tsc --noEmit",
-        "lint": "eslint src",
+        "lint": "biome lint",
+        "format": "prettier --write .",
         "test": "vscode-test",
         "changeset": "changeset",
         "version": "changeset version"
+    },
+    "contributes": {
+        "commands": [
+            {
+                "command": "layoutManager.createLayout",
+                "title": "Layout Manager: Create Layout"
+            },
+            {
+                "command": "layoutManager.loadLayout",
+                "title": "Layout Manager: Load Layout"
+            },
+            {
+                "command": "layoutManager.listLayouts",
+                "title": "Layout Manager: List Layouts"
+            },
+            {
+                "command": "layoutManager.overwriteLayout",
+                "title": "Layout Manager: Overwrite Layout"
+            },
+            {
+                "command": "layoutManager.renameLayout",
+                "title": "Layout Manager: Rename Layout"
+            },
+            {
+                "command": "layoutManager.deleteLayout",
+                "title": "Layout Manager: Delete Layout"
+            }
+        ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "layoutManager.layoutsView",
+                    "name": "Layouts",
+                    "icon": "$(list-tree)"
+                }
+            ]
+        }
     },
     "devDependencies": {
         "@types/vscode": "^1.100.0",

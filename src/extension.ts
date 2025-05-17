@@ -1,17 +1,17 @@
-import * as vscode from 'vscode'
-import { saveSession } from './commands/save-session'
-import { restoreSession } from './commands/restore-session'
+// Extension entry point
 
-export function activate(context: vscode.ExtensionContext) {
-    context.subscriptions.push(
-        vscode.commands.registerCommand('layoutManager.saveSession', async () => {
-            saveSession(context)
-        }),
+import { type ExtensionContext, window } from 'vscode'
+import { registerLayoutCommands } from './commands/layoutCommands'
+import { LayoutsViewProvider } from './views/layoutsViewProvider'
+import { LayoutService } from './services/layoutService'
+import { WorkspaceLayoutRepository } from './repositories/layoutRepository'
 
-        vscode.commands.registerCommand('layoutManager.restoreSession', async () => {
-            restoreSession(context)
-        }),
-    )
+export function activate(context: ExtensionContext): void {
+    registerLayoutCommands(context)
+    const repository = new WorkspaceLayoutRepository(context.workspaceState)
+    const service = new LayoutService(repository)
+    const viewProvider = new LayoutsViewProvider(service)
+    window.registerTreeDataProvider('layoutManager.layoutsView', viewProvider)
 }
 
-export function deactivate() {}
+export function deactivate(): void {}
