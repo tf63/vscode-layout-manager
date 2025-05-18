@@ -8,8 +8,8 @@ import type { LayoutProps } from '../types/layout'
 export interface LayoutRepository {
     getAll(): Promise<Layout[]>
     get(key: string): Promise<Layout | undefined>
-    save(layout: LayoutProps): Promise<void>
-    update(layout: LayoutProps): Promise<void>
+    save(layout: LayoutProps): Promise<Layout>
+    update(layout: LayoutProps): Promise<Layout>
     delete(key: string): Promise<void>
 }
 
@@ -19,26 +19,33 @@ export class WorkspaceLayoutRepository implements LayoutRepository {
 
     async getAll(): Promise<Layout[]> {
         const layoutMap = await this.getLayoutMap()
-        return Object.values(layoutMap)
+        return Object.values(layoutMap).map((layout) => new Layout(layout))
     }
 
     async get(key: string): Promise<Layout | undefined> {
         const layoutMap = await this.getLayoutMap()
-        return layoutMap[key]
+        const layout = layoutMap[key]
+        if (layout == null) return undefined
+
+        return new Layout(layoutMap[key])
     }
 
-    async save(layout: LayoutProps) {
+    async save(layout: LayoutProps): Promise<Layout> {
         const layoutMap = await this.getLayoutMap()
         const l = new Layout(layout)
         layoutMap[l.key] = l
         await this.storage.update(LAYOUT_STORAGE_KEY, layoutMap)
+        // 保存後の最新オブジェクトを返す
+        return (await this.getLayoutMap())[l.key]
     }
 
-    async update(layout: LayoutProps) {
+    async update(layout: LayoutProps): Promise<Layout> {
         const layoutMap = await this.getLayoutMap()
         const updated = new Layout(layout)
         layoutMap[updated.key] = updated
         await this.storage.update(LAYOUT_STORAGE_KEY, layoutMap)
+        // 更新後の最新オブジェクトを返す
+        return (await this.getLayoutMap())[updated.key]
     }
 
     async delete(key: string) {
