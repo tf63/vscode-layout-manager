@@ -1,18 +1,24 @@
 // Layouts view provider (stub)
 
 import { type Command, type Event, EventEmitter, type TreeDataProvider, TreeItem, window } from 'vscode'
+import type { Layout } from '../models/layout'
 import type { LayoutService } from '../services/layoutService'
 import { loadLayout } from '../usecases/loadLayoutUsecase'
 import { readTabGroups } from '../usecases/readTabGroupsUsecase'
 
 export class LayoutTreeItem extends TreeItem {
     constructor(
-        public readonly key: string,
+        public readonly layout: Layout,
         public readonly command?: Command,
     ) {
-        super(key)
+        super(layout.key)
         this.contextValue = 'layoutItem'
+        this.description = layout.createdAt
+        this.tooltip = `作成日: ${layout.createdAt}\n更新日: ${layout.updatedAt}`
         if (command) this.command = command
+    }
+    get key() {
+        return this.layout.key
     }
 }
 
@@ -29,7 +35,7 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
     getChildren(element?: TreeItem) {
         if (!element) {
             const layouts = this.layoutService.getAll()
-            return layouts.map((layout) => new LayoutTreeItem(layout.key))
+            return layouts.map((layout) => new LayoutTreeItem(layout))
         }
         return []
     }

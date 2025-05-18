@@ -76,18 +76,23 @@
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": "layoutManager-layoutsContainer",
-                    "title": "Layouts",
+                    "id": "layoutManager-mainContainer",
+                    "title": "Layout Manager",
                     "icon": "$(list-tree)"
                 }
             ]
         },
         "views": {
-            "layoutManager-layoutsContainer": [
+            "layoutManager-mainContainer": [
                 {
                     "id": "layoutManager.layoutsView",
                     "name": "Layouts",
                     "icon": "$(list-tree)"
+                },
+                {
+                    "id": "layoutManager.emptyView",
+                    "name": "Empty",
+                    "icon": "$(circle-outline)"
                 }
             ]
         },

@@ -4,6 +4,7 @@ import { type ExtensionContext, commands, window } from 'vscode'
 import { registerLayoutCommands } from './commands/layoutCommands'
 import { WorkspaceLayoutRepository } from './repositories/layoutRepository'
 import { LayoutService } from './services/layoutService'
+import { EmptyViewProvider } from './views/emptyViewProvider'
 import { LayoutTreeItem, LayoutsViewProvider } from './views/layoutsViewProvider'
 
 export function activate(context: ExtensionContext): void {
@@ -11,6 +12,8 @@ export function activate(context: ExtensionContext): void {
     const service = new LayoutService(repository)
     const viewProvider = new LayoutsViewProvider(service)
     window.registerTreeDataProvider('layoutManager.layoutsView', viewProvider)
+    const emptyViewProvider = new EmptyViewProvider()
+    window.registerTreeDataProvider('layoutManager.emptyView', emptyViewProvider)
     // +ボタンで新規作成
     context.subscriptions.push(
         commands.registerCommand('layoutManager.createLayoutFromView', async () => {
@@ -19,8 +22,8 @@ export function activate(context: ExtensionContext): void {
     )
     // ツリーアイテム右クリック用コマンド
     context.subscriptions.push(
-        commands.registerCommand('layoutManager.deleteLayoutFromView', async (item: LayoutTreeItem) => {
-            await viewProvider.deleteLayout(item.key)
+        commands.registerCommand('layoutManager.deleteLayoutFromView', (item: LayoutTreeItem) => {
+            viewProvider.deleteLayout(item.key)
         }),
     )
     context.subscriptions.push(
