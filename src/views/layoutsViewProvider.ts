@@ -23,8 +23,11 @@ export class LayoutTreeItem extends TreeItem {
     ) {
         super(layout.key, TreeItemCollapsibleState.Collapsed)
         this.contextValue = 'layoutItem'
-        this.description = layout.createdAt
-        this.tooltip = `作成日: ${layout.createdAt}\n更新日: ${layout.updatedAt}`
+        // ファイル数とtabgroup数をdescriptionに表示
+        const fileCount = new Set(layout.tabGroups.flatMap((g) => g.tabs.map((t) => t.path))).size
+        const tabGroupCount = layout.tabGroups.length
+        this.description = `files: ${fileCount}, groups: ${tabGroupCount}`
+        this.tooltip = `ファイル数: ${fileCount}\nタブグループ数: ${tabGroupCount}`
         if (command) this.command = command
     }
     get key() {
