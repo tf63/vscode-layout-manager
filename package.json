@@ -52,14 +52,68 @@
             {
                 "command": "layoutManager.deleteLayout",
                 "title": "Layout Manager: Delete Layout"
+            },
+            {
+                "command": "layoutManager.createLayoutFromView",
+                "title": "Layout Manager: Create Layout (View)"
+            },
+            {
+                "command": "layoutManager.deleteLayoutFromView",
+                "title": "Delete",
+                "icon": "$(trash)"
+            },
+            {
+                "command": "layoutManager.renameLayoutFromView",
+                "title": "Rename",
+                "icon": "$(edit)"
+            },
+            {
+                "command": "layoutManager.overwriteLayoutFromView",
+                "title": "Overwrite",
+                "icon": "$(refresh)"
             }
         ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "layoutManager-layoutsContainer",
+                    "title": "Layouts",
+                    "icon": "$(list-tree)"
+                }
+            ]
+        },
         "views": {
-            "explorer": [
+            "layoutManager-layoutsContainer": [
                 {
                     "id": "layoutManager.layoutsView",
                     "name": "Layouts",
                     "icon": "$(list-tree)"
+                }
+            ]
+        },
+        "views/title": [
+            {
+                "command": "layoutManager.createLayoutFromView",
+                "when": "view == layoutManager.layoutsView",
+                "group": "navigation@1"
+            }
+        ],
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "layoutManager.deleteLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline@2"
+                },
+                {
+                    "command": "layoutManager.renameLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline@3"
+                },
+                {
+                    "command": "layoutManager.overwriteLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline@4"
                 }
             ]
         }

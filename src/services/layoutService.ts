@@ -9,35 +9,34 @@ export class LayoutService {
         this.repository = repository
     }
 
-    async create(name: string, tabGroups: LayoutProps['tabGroups']) {
-        const layout = new Layout({
-            key: name,
-            tabGroups,
-        })
-        await this.repository.save(layout)
+    create(name: string, tabGroups: LayoutProps['tabGroups']): Layout {
+        const layout = new Layout({ key: name, tabGroups })
+        return this.repository.save(layout)
     }
 
-    async getAll() {
-        return await this.repository.getAll()
+    getAll() {
+        return this.repository.getAll()
     }
 
-    async get(key: string) {
-        return await this.repository.get(key)
+    get(key: string): Layout | undefined {
+        const layout = this.repository.get(key)
+        return layout
     }
 
-    async overwrite(layout: LayoutProps) {
-        await this.repository.update(new Layout(layout))
+    overwrite(layoutProps: LayoutProps): Layout {
+        return this.repository.update(layoutProps.key, layoutProps)
     }
 
-    async rename(key: string, newKey: string) {
-        const layout = await this.repository.get(key)
+    rename(key: string, newKey: string): Layout | undefined {
+        const layout = this.repository.get(key)
         if (layout != null) {
             layout.setKey(newKey)
-            await this.repository.update(layout)
+            return this.repository.update(key, layout)
         }
+        return undefined
     }
 
-    async delete(key: string) {
-        await this.repository.delete(key)
+    delete(key: string) {
+        this.repository.delete(key)
     }
 }

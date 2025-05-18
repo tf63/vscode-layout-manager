@@ -1,4 +1,4 @@
-import type { TabGroup, LayoutProps } from '../types/layout'
+import type { LayoutProps, TabGroup } from '../types/layout'
 
 export class Layout {
     key: string
@@ -19,8 +19,10 @@ export class Layout {
         this.touch()
     }
 
-    setTabGroups(tabGroups: TabGroup[]) {
-        this.tabGroups = tabGroups
+    setLayout(layout: LayoutProps) {
+        this.key = layout.key
+        this.tabGroups = layout.tabGroups
+        this.createdAt = layout.createdAt ?? this.createdAt
         this.touch()
     }
 
