@@ -26,9 +26,9 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
         return element
     }
 
-    async getChildren(element?: TreeItem) {
+    getChildren(element?: TreeItem) {
         if (!element) {
-            const layouts = await this.layoutService.getAll()
+            const layouts = this.layoutService.getAll()
             return layouts.map((layout) => new LayoutTreeItem(layout.key))
         }
         return []
@@ -36,7 +36,7 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
 
     // TreeViewでアイテム選択時にレイアウトをロード
     async onDidSelectLayout(item: LayoutTreeItem) {
-        const layout = await this.layoutService.get(item.key)
+        const layout = this.layoutService.get(item.key)
         if (!layout) {
             window.showWarningMessage(`レイアウト「${item.key}」が見つかりません`)
             return
@@ -53,13 +53,13 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
             window.showWarningMessage('レイアウトの取得に失敗しました')
             return
         }
-        await this.layoutService.create(name, tabGroups)
+        this.layoutService.create(name, tabGroups)
         window.showInformationMessage(`レイアウト「${name}」を作成しました`)
         this.refresh()
     }
 
-    async deleteLayout(key: string) {
-        await this.layoutService.delete(key)
+    deleteLayout(key: string) {
+        this.layoutService.delete(key)
         window.showInformationMessage(`レイアウト「${key}」を削除しました`)
         this.refresh()
     }
@@ -67,7 +67,7 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
     async renameLayout(key: string) {
         const newName = await window.showInputBox({ prompt: '新しいレイアウト名を入力してください', value: key })
         if (!newName) return
-        await this.layoutService.rename(key, newName)
+        this.layoutService.rename(key, newName)
         window.showInformationMessage(`レイアウト「${key}」を「${newName}」に変更しました`)
         this.refresh()
     }
@@ -78,10 +78,10 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
             window.showWarningMessage('レイアウトの取得に失敗しました')
             return
         }
-        const layout = await this.layoutService.get(key)
+        const layout = this.layoutService.get(key)
         if (!layout) return
         layout.tabGroups = tabGroups
-        await this.layoutService.overwrite(layout)
+        this.layoutService.overwrite(layout)
         window.showInformationMessage(`レイアウト「${key}」を上書きしました`)
         this.refresh()
     }

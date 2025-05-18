@@ -16,11 +16,11 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
                 window.showWarningMessage('レイアウトの取得に失敗しました')
                 return
             }
-            await service.create(name, tabGroups)
+            service.create(name, tabGroups)
             window.showInformationMessage(`レイアウト「${name}」を作成しました`)
         }),
         commands.registerCommand('layoutManager.loadLayout', async () => {
-            const layouts = await service.getAll()
+            const layouts = service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -32,7 +32,7 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
             )
             if (!pick) return
 
-            const layout = await service.get(pick)
+            const layout = service.get(pick)
             if (!layout) return
 
             try {
@@ -43,7 +43,7 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
             }
         }),
         commands.registerCommand('layoutManager.listLayouts', async () => {
-            const layouts = await service.getAll()
+            const layouts = service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -54,7 +54,7 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
             )
         }),
         commands.registerCommand('layoutManager.overwriteLayout', async () => {
-            const layouts = await service.getAll()
+            const layouts = service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -64,14 +64,14 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
                 { placeHolder: '上書きするレイアウトを選択' },
             )
             if (!pick) return
-            const layout = await service.get(pick)
+            const layout = service.get(pick)
             if (!layout) return
             layout.tabGroups = []
-            await service.overwrite(layout)
+            service.overwrite(layout)
             window.showInformationMessage(`レイアウト「${pick}」を上書きしました`)
         }),
         commands.registerCommand('layoutManager.renameLayout', async () => {
-            const layouts = await service.getAll()
+            const layouts = service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -83,11 +83,11 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
             if (!pick) return
             const newName = await window.showInputBox({ prompt: '新しいレイアウト名を入力してください', value: pick })
             if (!newName) return
-            await service.rename(pick, newName)
+            service.rename(pick, newName)
             window.showInformationMessage(`レイアウト「${pick}」を「${newName}」に変更しました`)
         }),
         commands.registerCommand('layoutManager.deleteLayout', async () => {
-            const layouts = await service.getAll()
+            const layouts = service.getAll()
             if (layouts.length === 0) {
                 window.showWarningMessage('レイアウトがありません')
                 return
@@ -97,7 +97,7 @@ export function registerLayoutCommands(context: ExtensionContext, service: Layou
                 { placeHolder: '削除するレイアウトを選択' },
             )
             if (!pick) return
-            await service.delete(pick)
+            service.delete(pick)
             window.showInformationMessage(`レイアウト「${pick}」を削除しました`)
         }),
     )
