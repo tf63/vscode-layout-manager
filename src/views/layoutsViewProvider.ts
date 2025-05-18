@@ -1,18 +1,55 @@
 // Layouts view provider (stub)
 
-import { type Command, type Event, EventEmitter, type TreeDataProvider, TreeItem, window } from 'vscode'
+import { relative } from 'node:path'
+import {
+    type Command,
+    type Event,
+    EventEmitter,
+    type TreeDataProvider,
+    TreeItem,
+    TreeItemCollapsibleState,
+    window,
+    workspace,
+} from 'vscode'
+import type { Layout } from '../models/layout'
 import type { LayoutService } from '../services/layoutService'
 import { loadLayout } from '../usecases/loadLayoutUsecase'
 import { readTabGroups } from '../usecases/readTabGroupsUsecase'
 
 export class LayoutTreeItem extends TreeItem {
     constructor(
-        public readonly key: string,
+        public readonly layout: Layout,
         public readonly command?: Command,
     ) {
-        super(key)
+        super(layout.key, TreeItemCollapsibleState.Collapsed)
         this.contextValue = 'layoutItem'
+        // ファイル数とtabgroup数をdescriptionに表示
+        const fileCount = new Set(layout.tabGroups.flatMap((g) => g.tabs.map((t) => t.path))).size
+        const tabGroupCount = layout.tabGroups.length
+        this.description = `files: ${fileCount}, groups: ${tabGroupCount}`
+        this.tooltip = `ファイル数: ${fileCount}\nタブグループ数: ${tabGroupCount}`
         if (command) this.command = command
+    }
+    get key() {
+        return this.layout.key
+    }
+}
+
+export class FileTreeItem extends TreeItem {
+    constructor(public readonly filePath: string) {
+        // workspaceのルートからの相対パスを取得
+        const wsFolders = workspace.workspaceFolders
+        let relPath = filePath
+        if (wsFolders && wsFolders.length > 0) {
+            const wsPath = wsFolders[0].uri.fsPath
+            relPath = relative(wsPath, filePath)
+        }
+        // ファイル名のみをlabelに
+        const fileName = relPath.split(/[\\/]/).pop() ?? relPath
+        super(fileName, TreeItemCollapsibleState.None)
+        this.contextValue = 'fileItem'
+        this.description = relPath
+        this.tooltip = filePath
     }
 }
 
@@ -29,7 +66,14 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
     getChildren(element?: TreeItem) {
         if (!element) {
             const layouts = this.layoutService.getAll()
-            return layouts.map((layout) => new LayoutTreeItem(layout.key))
+            return layouts.map((layout) => new LayoutTreeItem(layout))
+        }
+        if (element instanceof LayoutTreeItem) {
+            // レイアウト内の全タブファイルパスをリストアップ
+            const filePaths = element.layout.tabGroups.flatMap((group) => group.tabs.map((tab) => tab.path))
+            // 重複を除外
+            const uniquePaths = Array.from(new Set(filePaths))
+            return uniquePaths.map((path) => new FileTreeItem(path))
         }
         return []
     }
