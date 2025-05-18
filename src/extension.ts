@@ -19,18 +19,18 @@ export function activate(context: ExtensionContext): void {
     )
     // ツリーアイテム右クリック用コマンド
     context.subscriptions.push(
-        commands.registerCommand('layoutManager.deleteLayoutFromView', async (key: string) => {
-            await viewProvider.deleteLayout(key)
+        commands.registerCommand('layoutManager.deleteLayoutFromView', async (item: LayoutTreeItem) => {
+            await viewProvider.deleteLayout(item.key)
         }),
     )
     context.subscriptions.push(
-        commands.registerCommand('layoutManager.renameLayoutFromView', async (key: string) => {
-            await viewProvider.renameLayout(key)
+        commands.registerCommand('layoutManager.renameLayoutFromView', async (item: LayoutTreeItem) => {
+            await viewProvider.renameLayout(item.key)
         }),
     )
     context.subscriptions.push(
-        commands.registerCommand('layoutManager.overwriteLayoutFromView', async (key: string) => {
-            await viewProvider.overwriteLayout(key)
+        commands.registerCommand('layoutManager.overwriteLayoutFromView', async (item: LayoutTreeItem) => {
+            await viewProvider.overwriteLayout(item.key)
         }),
     )
     // TreeViewのレイアウト選択時にusecaseを呼ぶ

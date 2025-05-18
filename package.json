@@ -52,6 +52,22 @@
             {
                 "command": "layoutManager.deleteLayout",
                 "title": "Layout Manager: Delete Layout"
+            },
+            {
+                "command": "layoutManager.createLayoutFromView",
+                "title": "Layout Manager: Create Layout (View)"
+            },
+            {
+                "command": "layoutManager.deleteLayoutFromView",
+                "title": "Layout Manager: Delete Layout (View)"
+            },
+            {
+                "command": "layoutManager.renameLayoutFromView",
+                "title": "Layout Manager: Rename Layout (View)"
+            },
+            {
+                "command": "layoutManager.overwriteLayoutFromView",
+                "title": "Layout Manager: Overwrite Layout (View)"
             }
         ],
         "viewsContainers": {
@@ -78,7 +94,26 @@
                 "when": "view == layoutManager.layoutsView",
                 "group": "navigation@1"
             }
-        ]
+        ],
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "layoutManager.deleteLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline"
+                },
+                {
+                    "command": "layoutManager.renameLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline"
+                },
+                {
+                    "command": "layoutManager.overwriteLayoutFromView",
+                    "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
+                    "group": "inline"
+                }
+            ]
+        }
     },
     "devDependencies": {
         "@types/vscode": "^1.100.0",

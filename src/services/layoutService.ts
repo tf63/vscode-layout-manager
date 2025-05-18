@@ -20,21 +20,18 @@ export class LayoutService {
 
     async get(key: string): Promise<Layout | undefined> {
         const layout = await this.repository.get(key)
-        if (layout == null) return undefined
-        // repositoryから返された値をそのまま返す（型保証のため明示的にLayout型で返す）
         return layout
     }
 
-    async overwrite(layout: LayoutProps): Promise<Layout> {
-        const updated = new Layout(layout)
-        return await this.repository.update(updated)
+    async overwrite(layoutProps: LayoutProps): Promise<Layout> {
+        return await this.repository.update(layoutProps.key, layoutProps)
     }
 
     async rename(key: string, newKey: string): Promise<Layout | undefined> {
         const layout = await this.repository.get(key)
         if (layout != null) {
             layout.setKey(newKey)
-            return await this.repository.update(layout)
+            return await this.repository.update(key, layout)
         }
         return undefined
     }

@@ -1,18 +1,19 @@
 // Layout repository interface and implementation
 
-import { Layout } from '../models/layout'
-import { LAYOUT_STORAGE_KEY } from '../constants/layout'
 import type { Memento } from 'vscode'
+import { LAYOUT_STORAGE_KEY } from '../constants/layout'
+import { Layout } from '../models/layout'
 import type { LayoutProps } from '../types/layout'
 
 export interface LayoutRepository {
     getAll(): Promise<Layout[]>
     get(key: string): Promise<Layout | undefined>
-    save(layout: LayoutProps): Promise<Layout>
-    update(layout: LayoutProps): Promise<Layout>
+    save(layoutProps: LayoutProps): Promise<Layout>
+    update(targetKey: string, layoutProps: LayoutProps): Promise<Layout>
     delete(key: string): Promise<void>
 }
 
+// TODO: いちいちgetLayoutMap()を呼ぶのは無駄なので、repositoryで持っておけば良い
 // TODO: 名前はWorkspaceLayoutRepositoryではない方が良い
 export class WorkspaceLayoutRepository implements LayoutRepository {
     constructor(private storage: Memento) {}
@@ -30,22 +31,32 @@ export class WorkspaceLayoutRepository implements LayoutRepository {
         return new Layout(layoutMap[key])
     }
 
-    async save(layout: LayoutProps): Promise<Layout> {
+    async save(layoutProps: LayoutProps): Promise<Layout> {
         const layoutMap = await this.getLayoutMap()
-        const l = new Layout(layout)
-        layoutMap[l.key] = l
+        const layout = new Layout(layoutProps)
+        layoutMap[layout.key] = layout
         await this.storage.update(LAYOUT_STORAGE_KEY, layoutMap)
         // 保存後の最新オブジェクトを返す
-        return (await this.getLayoutMap())[l.key]
+        return (await this.getLayoutMap())[layout.key]
     }
 
-    async update(layout: LayoutProps): Promise<Layout> {
-        const layoutMap = await this.getLayoutMap()
-        const updated = new Layout(layout)
-        layoutMap[updated.key] = updated
+    // TODO
+    async update(targetKey: string, layoutProps: LayoutProps): Promise<Layout> {
+        // トランザクション的に一時的なコピーで操作
+        const layoutMap = { ...(await this.getLayoutMap()) }
+
+        const layout = new Layout(layoutMap[targetKey])
+        if (layout == null) {
+            throw new Error(`Layout with key "${targetKey}" not found`)
+        }
+
+        delete layoutMap[targetKey]
+
+        layout.setLayout(layoutProps)
+        layoutMap[layout.key] = layout
+
         await this.storage.update(LAYOUT_STORAGE_KEY, layoutMap)
-        // 更新後の最新オブジェクトを返す
-        return (await this.getLayoutMap())[updated.key]
+        return (await this.getLayoutMap())[layout.key]
     }
 
     async delete(key: string) {
@@ -55,7 +66,8 @@ export class WorkspaceLayoutRepository implements LayoutRepository {
     }
 
     private async getLayoutMap(): Promise<Record<string, Layout>> {
-        const layoutMap = this.storage.get<Record<string, Layout>>(LAYOUT_STORAGE_KEY)
+        // biome-ignore lint: awaitを一時的に無視
+        const layoutMap = await this.storage.get<Record<string, Layout>>(LAYOUT_STORAGE_KEY)
         return layoutMap ?? {}
     }
 }
