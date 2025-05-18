@@ -1,6 +1,16 @@
 // Layouts view provider (stub)
 
-import { type Command, type Event, EventEmitter, type TreeDataProvider, TreeItem, window } from 'vscode'
+import { relative } from 'node:path'
+import {
+    type Command,
+    type Event,
+    EventEmitter,
+    type TreeDataProvider,
+    TreeItem,
+    TreeItemCollapsibleState,
+    window,
+    workspace,
+} from 'vscode'
 import type { Layout } from '../models/layout'
 import type { LayoutService } from '../services/layoutService'
 import { loadLayout } from '../usecases/loadLayoutUsecase'
@@ -11,7 +21,7 @@ export class LayoutTreeItem extends TreeItem {
         public readonly layout: Layout,
         public readonly command?: Command,
     ) {
-        super(layout.key)
+        super(layout.key, TreeItemCollapsibleState.Collapsed)
         this.contextValue = 'layoutItem'
         this.description = layout.createdAt
         this.tooltip = `作成日: ${layout.createdAt}\n更新日: ${layout.updatedAt}`
@@ -19,6 +29,22 @@ export class LayoutTreeItem extends TreeItem {
     }
     get key() {
         return this.layout.key
+    }
+}
+
+export class FileTreeItem extends TreeItem {
+    constructor(public readonly filePath: string) {
+        // workspaceのルートからの相対パスを表示
+        const wsFolders = workspace.workspaceFolders
+        let label = filePath
+        if (wsFolders && wsFolders.length > 0) {
+            const wsPath = wsFolders[0].uri.fsPath
+            label = relative(wsPath, filePath)
+        }
+        super(label, TreeItemCollapsibleState.None)
+        this.contextValue = 'fileItem'
+        this.description = label
+        this.tooltip = filePath
     }
 }
 
@@ -36,6 +62,13 @@ export class LayoutsViewProvider implements TreeDataProvider<TreeItem> {
         if (!element) {
             const layouts = this.layoutService.getAll()
             return layouts.map((layout) => new LayoutTreeItem(layout))
+        }
+        if (element instanceof LayoutTreeItem) {
+            // レイアウト内の全タブファイルパスをリストアップ
+            const filePaths = element.layout.tabGroups.flatMap((group) => group.tabs.map((tab) => tab.path))
+            // 重複を除外
+            const uniquePaths = Array.from(new Set(filePaths))
+            return uniquePaths.map((path) => new FileTreeItem(path))
         }
         return []
     }

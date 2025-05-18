@@ -70,7 +70,7 @@
             {
                 "command": "layoutManager.overwriteLayoutFromView",
                 "title": "Overwrite",
-                "icon": "$(refresh)"
+                "icon": "$(save)"
             }
         ],
         "viewsContainers": {
