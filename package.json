@@ -59,15 +59,18 @@
             },
             {
                 "command": "layoutManager.deleteLayoutFromView",
-                "title": "Layout Manager: Delete Layout (View)"
+                "title": "Delete",
+                "icon": "$(trash)"
             },
             {
                 "command": "layoutManager.renameLayoutFromView",
-                "title": "Layout Manager: Rename Layout (View)"
+                "title": "Rename",
+                "icon": "$(edit)"
             },
             {
                 "command": "layoutManager.overwriteLayoutFromView",
-                "title": "Layout Manager: Overwrite Layout (View)"
+                "title": "Overwrite",
+                "icon": "$(refresh)"
             }
         ],
         "viewsContainers": {
@@ -100,17 +103,17 @@
                 {
                     "command": "layoutManager.deleteLayoutFromView",
                     "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
-                    "group": "inline"
+                    "group": "inline@2"
                 },
                 {
                     "command": "layoutManager.renameLayoutFromView",
                     "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
-                    "group": "inline"
+                    "group": "inline@3"
                 },
                 {
                     "command": "layoutManager.overwriteLayoutFromView",
                     "when": "view == layoutManager.layoutsView && viewItem == layoutItem",
-                    "group": "inline"
+                    "group": "inline@4"
                 }
             ]
         }
