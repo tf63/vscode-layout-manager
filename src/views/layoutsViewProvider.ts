@@ -37,16 +37,18 @@ export class LayoutTreeItem extends TreeItem {
 
 export class FileTreeItem extends TreeItem {
     constructor(public readonly filePath: string) {
-        // workspaceのルートからの相対パスを表示
+        // workspaceのルートからの相対パスを取得
         const wsFolders = workspace.workspaceFolders
-        let label = filePath
+        let relPath = filePath
         if (wsFolders && wsFolders.length > 0) {
             const wsPath = wsFolders[0].uri.fsPath
-            label = relative(wsPath, filePath)
+            relPath = relative(wsPath, filePath)
         }
-        super(label, TreeItemCollapsibleState.None)
+        // ファイル名のみをlabelに
+        const fileName = relPath.split(/[\\/]/).pop() ?? relPath
+        super(fileName, TreeItemCollapsibleState.None)
         this.contextValue = 'fileItem'
-        this.description = label
+        this.description = relPath
         this.tooltip = filePath
     }
 }
