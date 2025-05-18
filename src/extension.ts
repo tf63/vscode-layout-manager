@@ -1,16 +1,53 @@
 // Extension entry point
 
-import { type ExtensionContext, window } from 'vscode'
+import { type ExtensionContext, commands, window } from 'vscode'
 import { registerLayoutCommands } from './commands/layoutCommands'
 import { WorkspaceLayoutRepository } from './repositories/layoutRepository'
 import { LayoutService } from './services/layoutService'
-import { LayoutsViewProvider } from './views/layoutsViewProvider'
+import { LayoutTreeItem, LayoutsViewProvider } from './views/layoutsViewProvider'
 
 export function activate(context: ExtensionContext): void {
     const repository = new WorkspaceLayoutRepository(context.workspaceState)
     const service = new LayoutService(repository)
     const viewProvider = new LayoutsViewProvider(service)
     window.registerTreeDataProvider('layoutManager.layoutsView', viewProvider)
+    // +ボタンで新規作成
+    context.subscriptions.push(
+        commands.registerCommand('layoutManager.createLayoutFromView', async () => {
+            await viewProvider.createLayout()
+        }),
+    )
+    // ツリーアイテム右クリック用コマンド
+    context.subscriptions.push(
+        commands.registerCommand('layoutManager.deleteLayoutFromView', async (key: string) => {
+            await viewProvider.deleteLayout(key)
+        }),
+    )
+    context.subscriptions.push(
+        commands.registerCommand('layoutManager.renameLayoutFromView', async (key: string) => {
+            await viewProvider.renameLayout(key)
+        }),
+    )
+    context.subscriptions.push(
+        commands.registerCommand('layoutManager.overwriteLayoutFromView', async (key: string) => {
+            await viewProvider.overwriteLayout(key)
+        }),
+    )
+    // TreeViewのレイアウト選択時にusecaseを呼ぶ
+    context.subscriptions.push(
+        window
+            .createTreeView('layoutManager.layoutsView', {
+                treeDataProvider: viewProvider,
+                // 選択時のイベントハンドラ
+                canSelectMany: false,
+            })
+            .onDidChangeSelection(async (e) => {
+                const item = e.selection[0]
+                if (item instanceof LayoutTreeItem) {
+                    await viewProvider.onDidSelectLayout(item)
+                }
+            }),
+    )
     registerLayoutCommands(context, service)
 }
 

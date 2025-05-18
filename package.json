@@ -54,15 +54,31 @@
                 "title": "Layout Manager: Delete Layout"
             }
         ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "layoutManager-layoutsContainer",
+                    "title": "Layouts",
+                    "icon": "$(list-tree)"
+                }
+            ]
+        },
         "views": {
-            "explorer": [
+            "layoutManager-layoutsContainer": [
                 {
                     "id": "layoutManager.layoutsView",
                     "name": "Layouts",
                     "icon": "$(list-tree)"
                 }
             ]
-        }
+        },
+        "views/title": [
+            {
+                "command": "layoutManager.createLayoutFromView",
+                "when": "view == layoutManager.layoutsView",
+                "group": "navigation@1"
+            }
+        ]
     },
     "devDependencies": {
         "@types/vscode": "^1.100.0",
